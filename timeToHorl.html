@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="libs/bootstrap.min.css" rel="stylesheet">
+    <link href="libs/fontawesome-free-6.1.1-web/css/all.min.css"  rel="stylesheet" />
+    <link rel="stylesheet" href="style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <h1><a href="index.html" class="btn btn-secondary"><i class="fa fa-arrow-left"></i> Retour</a> 00:00 <i class="fa fa-arrow-right"></i> <i class="fa fa-clock"></i></h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-6 my-3">
+                <div class="my-3">
+                    <div class="text-center">
+                        <button id="generate" type="button" class="btn btn-primary my-3">Générer l'heure</button>
+                    </div>
+                    <div id="hourConsigne" class="alert alert-primary display-1">
+                        
+                    </div>
+                </div>
+                <div class="row my-3">
+                    <div class="col-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">Heures</h3>
+                                <div class="btn-group">
+                                    <button class="btn btn-success" id="hourPlus"><i class="fa fa-plus"></i></button>
+                                    <button class="btn btn-danger" id="hourMoins"><i class="fa fa-minus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">Minutes</h3>
+                                <div class="btn-group">
+                                    <button class="btn btn-success" id="minPlus"><i class="fa fa-plus"></i></button>
+                                    <button class="btn btn-danger" id="minMoins"><i class="fa fa-minus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center my-3">
+                    <form id="valid">
+                        <button class="btn btn-success" type="submit"><i class="fa fa-check"></i> Valider</button>
+                    </form>
+                </div>
+                <div class="my-3">
+                    <div id="good" class="alert alert-success"><i class="fa fa-check"></i> Bonne réponse</div>
+                    <div id="bad" class="alert alert-danger"><i class="fa fa-ban"></i> Vous avez régler <span id="current"></span></div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 my-3">
+                <div id="clockContainer">
+                    <div id="hour"></div>
+                    <div id="minute"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+
+        var currentHour=0;
+        var currentMinute=0;
+        var currentmapm=0;
+
+        var valHour = 0;
+        var valMinute = 0;
+
+        $(document).ready(function(){
+            $('#generate').click(function(){
+                $("#good").hide();
+                $("#bad").hide();
+                
+                hr = randomIntFromInterval(1,12);
+                min = randomIntFromInterval(0,59);
+                mapm = randomIntFromInterval(1,2);
+
+                if(mapm == 1)
+                {
+                    currentHour=hr;
+                }
+                else
+                {
+                    currentHour=hr + 12;
+                }
+
+                currentMinute=min;
+                currentmapm = mapm;
+
+                $("#hourConsigne").html('<i class="fa fa-clock"></i> ' + ("0" + currentHour).slice(-2) + 'h' + ("0" + currentMinute).slice(-2));
+
+                InitHorloge();
+
+            });
+
+            $('#generate').click();
+
+            function InitHorloge()
+            {
+                hr = randomIntFromInterval(1,12);
+                min = randomIntFromInterval(0,59);
+
+                valHour = hr;
+                valMinute = min;
+                
+                updateHorloge();
+            }
+
+            function updateHorloge()
+            {
+                hr = valHour;
+                min = valMinute;
+                hr_rotation = 30 * hr + min / 2; //converting current time
+                min_rotation = 6 * min;
+            
+                hour.style.transform = `rotate(${hr_rotation}deg)`;
+                minute.style.transform = `rotate(${min_rotation}deg)`;    
+            }
+
+            function randomIntFromInterval(min, max) { // min and max included 
+                return Math.floor(Math.random() * (max - min + 1) + min)
+            }
+            
+
+            $('#hourPlus').click(function(){
+                valHour++;
+                updateHorloge();
+            });
+
+            $('#hourMoins').click(function(){
+                valHour--;
+                if(valHour<=0)
+                {
+                    valHour = valHour + 12;
+                }
+                updateHorloge();
+            });
+
+            $('#minPlus').click(function(){
+                valMinute++;
+                updateHorloge();
+            });
+
+            $('#minMoins').click(function(){
+                valMinute--;
+                if(valMinute<0)
+                {
+                    valHour = valHour + 59;
+                }
+                updateHorloge();
+            });
+
+            $('#valid').submit(function(e){
+                e.preventDefault();
+                finalHour = valHour;
+                if(mapm == 2)
+                {
+                    if(valHour < 12)
+                    {
+                        finalHour = valHour + 12;
+                    }
+                }
+                else
+                {
+                    if(valHour > 12)
+                    {
+                        finalHour = valHour - 12;
+                    }
+                }
+                
+                if(currentHour == finalHour && currentMinute == valMinute)
+                {
+                    $("#good").show();
+                    $("#bad").hide();
+                }
+                else
+                {
+                    $("#good").hide();
+                    $("#bad").show();
+                    
+
+                    $('#current').html(("0" + finalHour).slice(-2) + 'h' + ("0" + valMinute).slice(-2) + ' au lieu de ' + ("0" + currentHour).slice(-2) + 'h' + ("0" + currentMinute).slice(-2));
+                }
+            });
+        });
+    </script>
+</body>
+</html>

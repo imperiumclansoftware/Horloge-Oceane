@@ -23,6 +23,6 @@ Aller sur la page d'[index](index.html) ou directement sur la [page d'écriture]
 - faire tourner l'aiguille des minutes grâçe au boutons + et -
 - cliquer sur valider
 
-L'application répond `Bonne réponse` ou un message vous signalant l'`Erreur d'écriture`
+L'application répond `Bonne réponse` ou un message vous signalant l'`Erreur d'écriture` 
 
 
